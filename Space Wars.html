@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Race</title>
+    <style>
+        *
+      {
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+      }
+      body
+      {
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        background:#000000;
+        overflow: hidden;
+      }
+      button
+      {
+        background: rgba(255, 255, 255, 0);
+        color: #ffffff;
+        border: 1px solid #ffffff;
+        border-radius: 20px;
+      }
+      button:hover
+      {
+        background: rgba(255, 255, 255, 0.5);
+        opacity: 1;
+      }
+      button:active
+      {
+        background: rgba(255, 255, 255, 0.75);
+        opacity: 1;
+      }
+      button:disabled
+      {
+        opacity: 0;
+      }
+      .start
+      {
+        position: absolute;
+        bottom: 30%;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 100px;
+        width: 200px;
+        font-size: 30px;
+        z-index: 12;
+      }
+      .pause
+      {
+        position: absolute;
+        justify-content:center;
+        align-items:center;
+        height: 64px;
+        width: 64px;
+        top: 10px;
+        left: 10px;
+        font-size: 20px;
+        font-weight: 400;
+        opacity: .5;
+        z-index: 14;
+      }
+      .star
+      {
+        position: absolute;
+        background: #ffffff;
+        top: 10px;
+        left: 10px;
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        filter: blur(1px);
+        z-index: 0;
+      }
+      .ship
+      {
+        position: absolute;
+        height: 84px;
+        width: 64px;
+        bottom: 25%;
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        border-bottom-left-radius: 25px;
+        border-bottom-right-radius: 25px;
+        transform: translateX(-50%) translateY(50%);
+        background: linear-gradient(to right, #5a5a5a 25%, #b1b1b1 75%);
+        opacity: 0;
+        z-index: 10;
+      }
+      .ship::after
+      {
+        content: '';
+        position: absolute;
+        height: 36px;
+        width: 56px;
+        left: 50%;
+        top: 5px;
+        transform: translateX(-50%);
+        border-top-left-radius: 45px;
+        border-top-right-radius: 45px;
+        background: linear-gradient(to right, #021c42 25%, #2d7fa0 75%);
+      }
+      .ship::before
+      {
+        content: '';
+        position: absolute;
+        height: 24px;
+        width: 36px;
+        bottom: -24px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #252525 25%, #555555 75%);
+        border-top-left-radius: 45px;
+        border-top-right-radius: 45px;
+        border-bottom: 2px solid #686767;
+      }
+      .flame
+      {
+        position: absolute;
+        height: 16px;
+        width: 28px;
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: radial-gradient(rgb(255, 255, 255), rgb(0, 255, 234), rgba(0, 255, 234, .25));
+        opacity: 0;
+        filter: blur(0px);
+        z-index: 9;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+      }
+      .controls
+      {
+        position: fixed;
+        justify-content:center;
+        align-items:center;
+        height: 15%;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 5px;
+        opacity: 0;
+        z-index: 12;
+        border: 0;
+        border-color: #00000000;
+      }
+      .ctrBt
+      {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        font-size: xx-large;
+      }
+      .bullet
+      {
+        position: absolute;
+        justify-content:center;
+        align-items:center;
+        height: 20px;
+        width: 10px;
+        transform: translateX(-50%) translateY(-50%);
+        background: linear-gradient(to right, #252525 25%, #555555 75%);
+        opacity: 1;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        z-index: 8;
+      }
+      .bullet::before
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 8px;
+        bottom: -16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: radial-gradient(rgb(255, 255, 255), rgb(0, 255, 234), rgba(0, 255, 234, .25));
+        border-radius: 50%;
+      }
+      .bullet_img
+      {
+        position: absolute;
+        justify-content:center;
+        align-items:center;
+        height: 30px;
+        width: 20px;
+        left: 50%;
+        top: 10%;
+        transform: translateX(-50%) translateY(10%);
+        bottom: 0;
+        background: rgba(255, 255, 255, 0);
+        border: 2px solid #ffffff7a;
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        opacity: 1;
+        z-index: 15;
+      }
+      .bullet_text
+      {
+        position: absolute;
+        justify-content:center;
+        align-items:center;
+        left: 50%;
+        bottom: 20%;
+        transform: translateX(-50%) translateY(50%);
+        font-size: 20px;
+      }
+      .ufo_bullet1
+      {
+        position: absolute;
+        justify-content:center;
+        align-items:center;
+        height: 20px;
+        width: 10px;
+        background: linear-gradient(to right, #969696 25%, #d5d5d5 75%);
+        opacity: 1;
+        border-radius: 8px;
+        z-index: 8;
+      }
+      .ufo_bullet1::before
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 8px;
+        top: -16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgb(255, 255, 255);
+        border-radius: 50%;
+      }
+      .ufo_bullet2
+      {
+        position: absolute;
+        justify-content:center;
+        align-items:center;
+        height: 20px;
+        width: 10px;
+        background: linear-gradient(to right, #2200ff 25%, #0088ff 75%);
+        opacity: 1;
+        border-radius: 8px;
+        z-index: 8;
+      }
+      .ufo_bullet2::before
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 8px;
+        top: -16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: radial-gradient(#ffffff 5%, #ff00dd 75%);
+        border-radius: 50%;
+      }
+      .ufo_bullet3
+      {
+        position: absolute;
+        justify-content:center;
+        align-items:center;
+        height: 30px;
+        width: 20px;
+        background: linear-gradient(to right, #00ffee 25%, #00ff48 75%);
+        opacity: 1;
+        border-radius: 8px;
+        z-index: 8;
+      }
+      .ufo_bullet3::before
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 10px;
+        top: -16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: radial-gradient(#ffffff 5%, #4000ff 75%);
+        border-radius: 50%;
+      }
+      .arrow_left
+      {
+        position: relative;
+        justify-content:center;
+        align-items:center;
+        height: 30px;
+        width: 30px;
+        left: 50%;
+        transform: translateX(-50%) rotate(-45deg);
+        bottom: 0;
+        background: rgba(255, 255, 255, 0);
+        border-top: 2px solid #ffffff;
+        border-left: 2px solid #ffffff;
+        opacity: 1;
+        z-index: 15;
+      }
+      .arrow_right
+      {
+        position: relative;
+        justify-content:center;
+        align-items:center;
+        height: 30px;
+        width: 30px;
+        left: 50%;
+        transform: translateX(-50%) rotate(45deg);
+        bottom: 0;
+        background: rgba(255, 255, 255, 0);
+        border-top: 2px solid #ffffff;
+        border-right: 2px solid #ffffff;
+        opacity: 1;
+        z-index: 15;
+      }
+      .ufo1
+      {
+        position: absolute;
+        height: 32px;
+        width: 64px;
+        left: 50%;
+        bottom: 75%;
+        transform: translateX(-50%) translateY(50%);
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to top, #1c4b48 25%, #3abbdb 75%);
+        opacity: 1;
+        z-index: 10;
+      }
+      .ufo1::after
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 32px;
+        left: 50%;
+        top: -10px;
+        transform: translateX(-50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to right, #330242 25%, #2d5ba0 75%);
+      }
+      .ufo1::before
+      {
+        content: '';
+        position: absolute;
+        height: 12px;
+        width: 28px;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #161944 25%, #270707 75%);
+        border-bottom: 2px solid #686767;
+      }
+      .ufo2
+      {
+        position: absolute;
+        height: 32px;
+        width: 64px;
+        left: 50%;
+        bottom: 75%;
+        transform: translateX(-50%) translateY(50%);
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to top, #301c4b 25%, #953adb 75%);
+        opacity: 1;
+        z-index: 10;
+      }
+      .ufo2::after
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 32px;
+        left: 50%;
+        top: -10px;
+        transform: translateX(-50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to right, #330242 25%, #2d5ba0 75%);
+      }
+      .ufo2::before
+      {
+        content: '';
+        position: absolute;
+        height: 12px;
+        width: 28px;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #161944 25%, #270707 75%);
+        border-bottom: 2px solid #686767;
+      }
+      .ufo3
+      {
+        position: absolute;
+        height: 32px;
+        width: 64px;
+        left: 50%;
+        bottom: 75%;
+        transform: translateX(-50%) translateY(50%);
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to top, #1c4b48 25%, #3adb75 75%);
+        opacity: 1;
+        z-index: 10;
+      }
+      .ufo3::after
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 32px;
+        left: 50%;
+        top: -10px;
+        transform: translateX(-50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to right, #330242 25%, #2d5ba0 75%);
+      }
+      .ufo3::before
+      {
+        content: '';
+        position: absolute;
+        height: 12px;
+        width: 28px;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #161944 25%, #270707 75%);
+        border-bottom: 2px solid #686767;
+      }
+      .ufo4
+      {
+        position: absolute;
+        height: 32px;
+        width: 64px;
+        left: 50%;
+        bottom: 75%;
+        transform: translateX(-50%) translateY(50%);
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to top, #4b2f1c 25%, #dbc83a 75%);
+        opacity: 1;
+        z-index: 10;
+      }
+      .ufo4::after
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 32px;
+        left: 50%;
+        top: -10px;
+        transform: translateX(-50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to right, #330242 25%, #2d5ba0 75%);
+      }
+      .ufo4::before
+      {
+        content: '';
+        position: absolute;
+        height: 12px;
+        width: 28px;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #161944 25%, #270707 75%);
+        border-bottom: 2px solid #686767;
+      }
+      .ufo5
+      {
+        position: absolute;
+        height: 32px;
+        width: 64px;
+        left: 50%;
+        bottom: 75%;
+        transform: translateX(-50%) translateY(50%);
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to top, #3b3716 25%, #db553a 75%);
+        opacity: 1;
+        z-index: 10;
+      }
+      .ufo5::after
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 32px;
+        left: 50%;
+        top: -10px;
+        transform: translateX(-50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to right, #330242 25%, #2d5ba0 75%);
+      }
+      .ufo5::before
+      {
+        content: '';
+        position: absolute;
+        height: 12px;
+        width: 28px;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #161944 25%, #270707 75%);
+        border-bottom: 2px solid #686767;
+      }
+      .ufo6
+      {
+        position: absolute;
+        height: 32px;
+        width: 64px;
+        left: 50%;
+        bottom: 75%;
+        transform: translateX(-50%) translateY(50%);
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        border-bottom-left-radius: 30%;
+        border-bottom-right-radius: 30%;
+        background: linear-gradient(to top, #393232 25%, #aea2c1 75%);
+        opacity: 1;
+        z-index: 10;
+      }
+      .ufo6::after
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 42px;
+        left: 50%;
+        top: -5px;
+        transform: translateX(-50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to right, #330242 25%, #2d5ba0 75%);
+      }
+      .ufo6::before
+      {
+        content: '';
+        position: absolute;
+        height: 8px;
+        width: 32px;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #161944 25%, #270707 75%);
+        border-bottom: 2px solid #686767;
+      }
+      .ufo7
+      {
+        position: absolute;
+        height: 32px;
+        width: 64px;
+        left: 50%;
+        bottom: 75%;
+        transform: translateX(-50%) translateY(50%);
+        border-radius: 10px;
+        background: linear-gradient(to top, #5a5a5a 25%, #c3c3c3 75%);
+        opacity: 1;
+        z-index: 10;
+      }
+      .ufo7::after
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 32px;
+        left: 50%;
+        top: 8px;
+        transform: translateX(-50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        background: linear-gradient(to right, #330242 25%, #2d5ba0 75%);
+      }
+      .ufo7::before
+      {
+        content: '';
+        position: absolute;
+        height: 6px;
+        width: 18px;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #161944 25%, #270707 75%);
+        border-bottom: 2px solid #686767;
+      }
+      .ufo8
+      {
+        position: absolute;
+        height: 32px;
+        width: 64px;
+        left: 50%;
+        bottom: 75%;
+        transform: translateX(-50%) translateY(50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        background: linear-gradient(to top, #383838 25%, #606060 75%);
+        opacity: 1;
+        z-index: 10;
+      }
+      .ufo8::after
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 56px;
+        left: 50%;
+        top: 4px;
+        transform: translateX(-50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to right, #330242 25%, #2d5ba0 75%);
+      }
+      .ufo8::before
+      {
+        content: '';
+        position: absolute;
+        height: 8px;
+        width: 32px;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #161944 25%, #270707 75%);
+        border-bottom: 2px solid #686767;
+      }
+      .ufo9
+      {
+        position: absolute;
+        height: 56px;
+        width: 64px;
+        left: 50%;
+        bottom: 75%;
+        transform: translateX(-50%) translateY(50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to top, #2f0000 25%, #750000 75%);
+        opacity: 1;
+        z-index: 10;
+      }
+      .ufo9::after
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 56px;
+        left: 50%;
+        top: 4px;
+        transform: translateX(-50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to right, #330242 25%, #2d5ba0 75%);
+      }
+      .ufo9::before
+      {
+        content: '';
+        position: absolute;
+        height: 12px;
+        width: 32px;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #161944 25%, #270707 75%);
+        border-bottom: 2px solid #686767;
+      }
+      .ufo10
+      {
+        position: absolute;
+        height: 64px;
+        width: 48px;
+        left: 50%;
+        bottom: 75%;
+        transform: translateX(-50%) translateY(50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        background: linear-gradient(to right, #f1c902 5%, #ff0000 75%);
+        opacity: 1;
+        z-index: 10;
+      }
+      .ufo10::after
+      {
+        content: '';
+        position: absolute;
+        height: 16px;
+        width: 32px;
+        left: 50%;
+        top: 4px;
+        transform: translateX(-50%);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        background: linear-gradient(to right, #a207d1 25%, #0066ff 75%);
+      }
+      .ufo10::before
+      {
+        content: '';
+        position: absolute;
+        height: 42px;
+        width: 24px;
+        bottom: -10px;
+        left: 50%;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, #2730aa 25%, #981a1a 75%);
+        border-bottom: 2px solid #686767;
+      }
+      .blast
+      {
+        position: absolute;
+        height: 64px;
+        width: 64px;
+        left: 50%;
+        bottom: 50%;
+        border-radius: 50%;
+        background: radial-gradient(rgb(255, 225, 0), #fbff81);
+        opacity: 1;
+        z-index: 10;
+      }
+      .title
+      {
+        text-align: center;
+        font-size: 20vh;
+        color: #ffffff47;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .pauseMenu
+      {
+        position: absolute;
+        bottom: 20%;
+        left: 20%;
+        height: 60%;
+        width: 60%;
+        font-size: 30px;
+        opacity: 0;
+      }
+      .pauseMenuBts
+      {
+        position: relative;
+        text-align: center;
+        height: 33%;
+        width: 0;
+        font-size: 30px;
+        z-index: 12;
+      }
+      .credits
+      {
+        position: fixed;
+        text-align: center;
+        height: 60%;
+        width: 60%;
+        left: 20%;
+        top: 20%;
+        text-align: center;
+        color: #ffffff;
+        font-size: 30px;
+        z-index: 11;
+        background-color: #777777;
+        opacity: 0;
+      }
+      .creditsBackArea
+      {
+        position: fixed;
+        opacity: 0;
+      }
+      .BackT
+      {
+        width: 100vw;
+        height: 20vh;
+        top: 0;
+        left: 0;
+      }
+      .BackL
+      {
+        width: 20vw;
+        height: 60vh;
+        left: 0;
+        bottom: 20vh;
+        font-size: large;
+      }
+      .BackB
+      {
+        width: 100vw;
+        height: 20vh;
+        bottom: 0;
+        left: 0;
+      }
+      .BackR
+      {
+        width: 20vw;
+        height: 60vh;
+        right: 0;
+        bottom: 20vh;
+      }
+      .CB
+      {
+        border: 0;
+        z-index: 16;
+      }
+      .rightText
+      {
+        position: absolute;
+        height: 32px;
+        color: #ffffff7b;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: right;
+        font-size: 28px;
+        right: 5px;
+        top: 5px;
+        z-index: 17;
+      }
+      .rt2
+      {
+        top: 38px;
+      }
+      .rt3
+      {
+        top: 71px;
+      }
+      p
+      {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+    </style>
+</head>
+<body>
+    <div class="space">
+      <div class="title" id="title">
+        SPACE WARS
+      </div>
+      <button class="start" id="startBt" onclick="start()">Play</button>
+      <button class="pause" id="pauseBt" onclick="pause()" disabled="disabled">| |</button>
+      <div class="rightText" id="fpsText">FPS : 00</div>
+      <div class="rightText rt2" id="levelText">LEVEL : 01</div>
+      <div class="rightText rt3" id="ufoText">UFOS : 00</div>
+      <div class="pauseMenu" id="pauseMenu">
+        <button class="pauseMenuBts" onclick="pause()">
+          Resume
+        </button>
+        <button class="pauseMenuBts" onclick="pause(),restart()">
+          Restart
+        </button>
+        <button class="pauseMenuBts" onclick="Credits()">
+          Credits
+        </button>
+        <div id="credits" class="credits">
+          <p>Made by Kaladharan Lal</p>
+          <p>Started on : 12 February 2022</p>
+          <p>Finished on : </p>
+          <hr></hr>
+          <p><u>Disclaimer</u></p>
+          <p>The developer of this HTML game is not responsible if you have wasted your valuable time playing this game. Please play responsibility at your free time. This game is just a piece of my programming & art skills. May this game not harm your time.</p>
+          <button onclick="back()" class="creditsBackArea BackT CB" disabled="disabled"></button>
+          <button onclick="back()" class="creditsBackArea BackL CB" disabled="disabled"></button>
+          <button onclick="back()" class="creditsBackArea BackR CB" disabled="disabled"></button>
+          <button onclick="back()" class="creditsBackArea BackB CB" disabled="disabled"><h1>Back</h1></button>
+        </div>
+      </div>
+      <div id="bullets"></div>
+      <div class="ship" id="ship" onclick="fire()">
+        <div class="flame" id="thruster"></div>
+      </div>
+      <div id="ufos"></div>
+      <div id="blasts"></div>
+    </div>
+    <table border="50px" class="controls" id="ctrl">
+      <tr>
+        <td>
+          <button class="ctrBt" onclick="left()" id="leftBt" disabled="disabled">
+            <div class="arrow_left"></div>
+          </button>
+        </td>
+        <td width="40%">
+          <button class="ctrBt" onclick="fire()" id="fireBt" disabled="disabled">
+            <div class="bullet_text" id="bullet_text"></div>
+            <div class="bullet_img"></div>
+          </button>
+        </td>
+        <td>
+          <button class="ctrBt" onclick="right()" id="rightBt" disabled="disabled">
+            <div class="arrow_right"></div>
+          </button>
+        </td>
+      </tr>
+    </table>
+    <script>
+      var width = window.innerWidth;
+      var height = window.innerHeight;
+      console.log(`W:${width} H:${height}`)
+
+      //minimum and maximum of scale of stars
+      const sMin = 2;
+      const sMax = 6;
+
+      const noOfStars = 200;
+      const fps = 60;
+
+      var isPaused = true;
+      var onThrust = false;
+      var isLeft = false;
+      var isRight = false;
+
+      let startBt = document.getElementById("startBt");
+      let pauseBt = document.getElementById("pauseBt");
+      let stars = document.getElementsByClassName("stars");
+      let thruster = document.getElementById("thruster");
+      let ship = document.getElementById("ship");
+      let bullets = document.getElementById("bullets");
+      let bullet = document.getElementsByClassName("bullet");
+      let ctrl = document.getElementById("ctrl");
+      let ctrBt = document.getElementsByClassName("ctrBt");
+      let leftBt = document.getElementById("leftBt");
+      let fireBt = document.getElementById("fireBt");
+      let rightBt = document.getElementById("rightBt");
+      let bullet_text = document.getElementById("bullet_text");
+      let ufoGrp = document.getElementById("ufos");
+      let blasts = document.getElementById("blasts");
+      let title = document.getElementById("title");
+      let pauseMenu = document.getElementById("pauseMenu");
+      let pauseMenuBts = document.getElementsByClassName("pauseMenuBts");
+      let credits = document.getElementById("credits");
+      let backBts = document.getElementsByClassName("CB");
+      let fpsText = document.getElementById("fpsText");
+      let levelText = document.getElementById("levelText");
+      let ufoText = document.getElementById("ufoText");
+
+      //X&Y coordinates are in percentage scale
+      var shipY = 25;
+      const shipYSpeed = 5;
+      var shipX = 50;
+      const shipXSpeed = 1;
+      console.log(`shipX:${shipX} shipY:${shipY}`)
+      var flameOpa = 0.0;
+      const shipWd = 64; //px
+      const shipHt = 84; //px
+
+      var bulletX = [];
+      var bulletY = [];
+      const bulletSpeed = 1;
+      var noBullets = 0;
+      var totBullets = 20;
+      bullet_text.innerHTML = `${totBullets-noBullets}`;
+      const bulletWd = 10; //px
+      const bulletHt = 20; //px
+      var bulletStates = [];
+
+      var ufo1X = [];
+      var ufo1Y = [];
+      const ufo1XMaxSpeed = .1;
+      const ufo1XMinSpeed = .2;
+      var ufo1XSpeedVari = [];
+      var ufo1YSpeed = .05;
+      var noUfos = 0;
+      var totUfos = 10;
+      const ufo1ColliRad = 64; //px
+      const ufo1Wd = 64; //px
+      const ufo1Ht = 32; //px
+      var ufo1States = [];//True or false
+      var attackableUfo = false;
+
+      //for function mkstars
+      var className;
+      var scale;
+      let parent;
+      let mainDiv;
+      let bulletDiv;
+      let ufoDiv;
+      let Div;
+      
+      // blast
+      const noOfBlastes = 10;
+      var blastSet = [];
+      var blastX = [];
+      var blastY = [];
+      var blastScale = [];
+      const maxBlastRad = 50;
+      const minBlastRad = 30;
+      const scaleChange = 2;
+      var blastOpa = [];
+      const blasteOpaChange = .1;
+
+      var level = 1;
+
+      var dt;
+      var lastTime;
+      var x = 0;
+      var y = 0;
+      var fpss = [];
+      const totNoFpss = 20;
+      var fpsCount = 0;
+
+      function start()
+      {
+        console.log("Started");
+        startBt.disabled = true;
+        title.style.opacity = 0;
+        pauseBt.disabled = false;
+        isPaused = false;
+        onThrust = true;
+        ship.style.opacity = 1;
+        ctrl.style.opacity = 1;
+        ctrl.style.width = "100vw";
+        ctrBt[0].disabled = false;
+        ctrBt[0].style.height = "100%";
+        ctrBt[1].disabled = false;
+        ctrBt[1].style.height = "100%";
+        ctrBt[2].disabled = false;
+        ctrBt[2].style.height = "100%";
+        for(var i = 0; i < totBullets; i++)
+        {
+          bulletX.push(0);
+          bulletY.push(0);
+          bulletStates.push(false);
+        }
+        for(var i = 0; i < totUfos; i++)
+        {
+          ufo1X.push(0);
+          ufo1Y.push(0);
+          ufo1XSpeedVari.push(0);
+        }
+        mkUfos();
+      }
+      function restart()
+      {
+        console.log("Restarted");
+
+        switch(level)
+        {
+          case 1:
+            totUfos = 10;
+            totBullets = 20
+            break;
+          case 2:
+            totUfos = 20;
+            totBullets = 30;
+            break;
+          case 3:
+            totUfos = 30;
+            totBullets = 40;
+            break;
+          case 4:
+            totUfos = 10;
+            totBullets = 40;
+            attackableUfo = true;
+            break;
+          case 5:
+            totUfos = 30;
+            totBullets = 50;
+            break;
+          case 6:
+            totUfos = 30;
+            totBullets = 40;
+            break;
+          case 7:
+            totUfos = 30;
+            totBullets = 40;
+            break;
+          case 8:
+            totUfos = 30;
+            totBullets = 40;
+            break;
+          case 9:
+            totUfos = 30;
+            totBullets = 40;
+            break;
+          case 10:
+            totUfos = 1;
+            totBullets = 40;
+            break;
+          case 11:
+          default: totUfos = 0;
+        }
+
+        for(var i = 0; i < totUfos+totBullets; i++)
+        {
+          if(ufo1States[i] == true)
+          {
+            ufoGrp.removeChild(document.getElementById(`${i}ufo1`));
+            ufo1States[i] = false;
+          }
+          if(bulletStates[i] == true)
+          {
+            bullets.removeChild(document.getElementById(`${i}b`));
+            bulletStates[i] = false;
+          }
+        }
+
+        title.style.opacity = 1;
+        startBt.disabled = false;
+        pauseBt.disabled = true;
+        isPaused = true;
+        onThrust = false;
+        ship.style.opacity = 0;
+        ctrl.style.opacity = 0;
+        ctrl.style.width = "0";
+        ctrBt[0].disabled = true;
+        ctrBt[0].style.height = "0%";
+        ctrBt[1].disabled = true;
+        ctrBt[1].style.height = "0%";
+        ctrBt[2].disabled = true;
+        ctrBt[2].style.height = "0%";
+        noUfos = 0;
+        noBullets = 0;
+        bulletX = []
+        bulletY = []
+        bulletStates = []
+        ufo1X = []
+        ufo1Y = []
+        ufo1XSpeedVari = []
+        ufo1States = []
+
+        title.innerHTML = "Failed";
+        startBt.innerHTML = "Try Again";
+        bullet_text.innerHTML = `${totBullets-noBullets}`;
+      }
+      function pause()
+      {
+        if(isPaused)
+        {
+          isPaused = false;
+          console.log("resumed");
+          ctrl.style.opacity = 1;
+          ctrl.style.width = "100vw";
+          pauseMenu.style.opacity = 0;
+          for(var i=0; i<pauseMenuBts.length;i++)
+          {
+            pauseMenuBts[i].disabled = true;
+            pauseMenuBts[i].style.opacity = 0;
+            pauseMenuBts[i].style.width = "0";
+          }
+          ctrBt[0].disabled = false;
+          ctrBt[0].style.height = "100%";
+          ctrBt[1].disabled = false;
+          ctrBt[1].style.height = "100%";
+          ctrBt[2].disabled = false;
+          ctrBt[2].style.height = "100%";
+        }else{
+          isPaused = true;
+          console.log("paused");
+          ctrl.style.opacity = 0;
+          ctrl.style.width = "0";
+          pauseMenu.style.opacity = 1;
+          for(var i=0; i<pauseMenuBts.length;i++)
+          {
+            pauseMenuBts[i].disabled = false;
+            pauseMenuBts[i].style.opacity = 1;
+            pauseMenuBts[i].style.width = "100%";
+          }
+          ctrBt[0].disabled = true;
+          ctrBt[0].style.height = "0%";
+          ctrBt[1].disabled = true;
+          ctrBt[1].style.height = "0%";
+          ctrBt[2].disabled = true;
+          ctrBt[2].style.height = "0%";
+        }
+      }
+      function won()
+      {
+        level++;
+        restart();
+        title.innerHTML = "Won";
+        startBt.innerHTML = `Play Level-${level}`;
+      }
+      function Credits()
+      {
+        credits.style.opacity = 1;
+        for(var i=0; i<backBts.length; i++)
+        {
+          backBts[i].disabled = false;
+          backBts[i].style.opacity = 1;
+        }
+        for(var i=0; i<pauseMenuBts.length;i++)
+        {
+          pauseMenuBts[i].disabled = true;
+          pauseMenuBts[i].style.opacity = 0;
+          pauseMenuBts[i].style.width = "0";
+        }
+        pauseBt.disabled = true;
+        pauseBt.style.opacity = 0;
+        pauseBt.style.width = "0";
+      }
+      function back()
+      {
+        credits.style.opacity = 0;
+        for(var i=0; i<backBts.length; i++)
+        {
+          backBts[i].disabled = true;
+          backBts[i].style.opacity = 0;
+        }
+        for(var i=0; i<pauseMenuBts.length;i++)
+        {
+          pauseMenuBts[i].disabled = false;
+          pauseMenuBts[i].style.opacity = 1;
+          pauseMenuBts[i].style.width = "100%";
+        }
+        ctrBt[0].disabled = false;
+        ctrBt[0].style.height = "100%";
+        ctrBt[1].disabled = false;
+        ctrBt[1].style.height = "100%";
+        ctrBt[2].disabled = false;
+        ctrBt[2].style.height = "100%";
+        pauseBt.disabled = false;
+        pauseBt.style.opacity = 1;
+        pauseBt.style.width = "64px";
+      }
+      function refresh()
+      {
+        //computing window height & width of the window
+        if(width != window.innerWidth || height != window.innerHeight)
+        {
+          width = window.innerWidth;
+          height = window.innerHeight;
+          mkStars();
+          shipY = 25;
+        }
+
+        if(!isPaused)
+        {
+          // Controlling flame's opacity
+          if(onThrust)
+          {
+            if(flameOpa < 1)
+            {
+              flameOpa += .1;
+            }
+          }
+          else
+          {
+            if(flameOpa > 0)
+            {
+              flameOpa -= .1;
+            }
+          }
+          // For no letting the ship go out
+          if((shipX/100*width)-shipWd/2 <= 0)
+          {
+            shipX += shipXSpeed * dt;
+          }
+          if((shipX/100*width)+shipWd/2 >= width)
+          {
+            shipX -= shipXSpeed * dt;
+          }
+          // Updating flame opacity and position of bullet & ship
+          thruster.style.opacity = flameOpa;
+          ship.style.left = `${shipX}%`;
+          ship.style.bottom = `${shipY}%`;
+          
+          // To enable firing of bullet
+          for(var i = 0; i < totBullets; i++)
+          {
+            if(document.getElementById(`${i}b`) != null)
+            {
+              if(bulletY[i]+toYPercent(bulletHt/2) <= 100)
+              {
+                bulletY[i] += bulletSpeed * dt;
+                document.getElementById(`${i}b`).style.bottom = `${bulletY[i]}%`;
+              }
+              else
+              {
+                bullets.removeChild(document.getElementById(`${i}b`));
+                bulletStates[i] = false;
+                bulletX[i] = 0;
+                bulletY[i] = 0;
+              }
+            }
+          }
+          // To enable movement of ufos
+          for(var i = 0; i < totUfos; i++)
+            {
+              if(ufo1States[i])
+              {
+                if(ufo1Y[i] > 0)
+                {
+                  ufo1Y[i] -= ufo1YSpeed * dt;
+                  document.getElementById(`${i}ufo1`).style.bottom = `${ufo1Y[i]}%`;
+                  
+                  //enabling side wise movemont only if it is in the area
+                  if(ufo1X[i]+toXPercent(ufo1Wd/2) >= 100)
+                  {
+                    ufo1XSpeedVari[i] = -Math.abs(ufo1XSpeedVari[i]);
+                  }
+                  else if(ufo1X[i]-toXPercent(ufo1Wd/2) <= 0)
+                  {
+                    ufo1XSpeedVari[i] = Math.abs(ufo1XSpeedVari[i]);
+                  }
+                  ufo1X[i] += ufo1XSpeedVari[i] * dt;
+                  
+                  document.getElementById(`${i}ufo1`).style.left = `${ufo1X[i]}%`;
+                }
+                else
+                {
+                  isPaused = true;
+                  restart();
+                }
+              }
+            }
+          // moving the ship left and right
+          if(isLeft)
+          {
+            left();
+          }
+          if(isRight)
+          {
+            right();
+          }
+          // blast movement & update
+          if (blastSet.length > 0)
+          {
+            x = 0;
+            y = 0;
+            while(x < blastSet.length)
+            {
+              if(blastScale[x] < maxBlastRad)
+              {
+                blastScale[x] += scaleChange * dt;
+                blastX[x] += toXPercent(scaleChange/2) * dt;
+                blastY[x] += toYPercent(scaleChange/2) * dt;
+              }
+              if(blastOpa[x] > 0 && blastScale[x] >= maxBlastRad)
+              {
+                blastOpa[x] -= blasteOpaChange * dt;
+              }
+              blastSet[x].style.height = `${blastScale[x]}px`;
+              blastSet[x].style.width = `${blastScale[x]}px`;
+              blastSet[x].style.left = `${blastX[x]}%`;
+              blastSet[x].style.bottom = `${blastY[x]}%`;
+              blastSet[x].style.opacity = `${blastOpa[x]}`;
+              if (blastOpa[x] <= 0)
+              {
+                blasts.removeChild(blastSet[x]);
+                blastSet.splice(x, 1);
+                blastX.splice(x, 1);
+                blastY.splice(x, 1);
+                blastScale.splice(x, 1);
+                blastOpa.splice(x, 1);
+                x--;
+                y++;
+              }
+              x++;
+            }
+          }
+        }
+
+        // Checking for collition of bullets with ufos
+        for(var i = 0; i < totUfos; i++)
+        {
+          for(var j = 0; j < totBullets; j++)
+          {
+            //if(document.getElementById(`${i}ufo1`) != null && document.getElementById(`${j}b`) != null)
+            if(ufo1States[i] && bulletStates[j])
+            {
+              if(bulletX[j] > ufo1X[i]-toXPercent(ufo1Wd/2) && bulletX[j] < ufo1X[i]+toXPercent(ufo1Wd/2) && bulletY[j] > ufo1Y[i]-toYPercent(ufo1Ht/2) && bulletY[j] < ufo1Y[i]+toYPercent(ufo1Ht/2))
+              {
+                console.log("Collided");
+                console.log(`ufo-${i} at (${ufo1X[i]},${ufo1Y[i]})`);
+                console.log(`bullet-${j} at (${bulletX[j]},${bulletY[j]})`);
+                ufoGrp.removeChild(document.getElementById(`${i}ufo1`));
+                mkBlast(ufo1X[i], ufo1Y[i], 1);
+                ufo1X[i] = 0;
+                ufo1Y[i] = 0;
+                ufo1States[i] = false;
+                noUfos--;
+                bullets.removeChild(document.getElementById(`${j}b`));
+                bulletX[j] = 0;
+                bulletY[j] = 0;
+                bulletStates[j] = false;
+              }
+            }
+          }
+        }
+        // Checking if won
+        if (noUfos==0 && !isPaused)
+        {
+          won()
+        }
+        //Calculating delta time
+        dt = Date.now() - lastTime;
+        lastTime = Date.now();
+        fpss[fpsCount] = parseInt(1000/dt,10);
+        fpsCount++;
+        fpsCount = (fpsCount > totNoFpss) ? 0 : fpsCount;
+        dt /= 17;
+
+        //Finding average fps
+        x = 0;
+        for(var i=0; i<fpss.length; i++)
+        {
+          x += fpss[i];
+        }
+        x /= fpss.length;
+
+        // Titles update
+        fpsText.innerHTML = `FPS : ${parseInt(x,10)}`;
+        x = 0;
+        levelText.innerHTML = `LEVEL : ${level}`;
+        ufoText.innerHTML = `UFOS : ${noUfos}`;
+
+        setTimeout(refresh, 0);
+      }
+      function boost()
+      {
+        if(onThrust)
+        {
+          onThrust = false;
+          console.log("boost");
+        }else{
+          onThrust = true;
+          console.log("off");
+        }
+      }
+      function left()
+      {
+        if(!isPaused)
+        {
+          shipX -= shipXSpeed * dt;
+        }
+      }
+      function right()
+      {
+        if(!isPaused)
+        {
+          shipX += shipXSpeed * dt;
+        }
+      }
+      function fire()
+      {
+        if(!isPaused && noBullets < totBullets)
+        {
+          bulletDiv = document.createElement('div');
+          bulletDiv.classList.add("bullet");
+          bulletDiv.id = `${noBullets}b`;
+          bullets.appendChild(bulletDiv);
+          bulletX[noBullets] = shipX;
+          bulletY[noBullets] = shipY;
+          bulletDiv.style.bottom = `${bulletY[noBullets]}%`;
+          bulletDiv.style.left = `${bulletX[noBullets]}%`;
+          noBullets++;
+          bullet_text.innerHTML = `${totBullets-noBullets}`;
+          bulletStates[noBullets-1] = true;
+        }
+      }
+      function mkUfos()
+      {
+        if(!isPaused)
+        {
+          console.log("Making ufos");
+          for(var i = 0; i < totUfos; i++)
+          {
+            ufoDiv = document.createElement('div');
+            switch(level)
+            {
+              case 1: ufoDiv.classList.add("ufo1");
+                break;
+              case 2: ufoDiv.classList.add("ufo2");
+                break;
+              case 3: ufoDiv.classList.add("ufo3");
+                break;
+              case 4: ufoDiv.classList.add("ufo4");
+                break;
+              case 5: ufoDiv.classList.add("ufo5");
+                break;
+              case 6: ufoDiv.classList.add("ufo6");
+                break;
+              case 7: ufoDiv.classList.add("ufo7");
+                break;
+              case 8: ufoDiv.classList.add("ufo8");
+                break;
+              case 9: ufoDiv.classList.add("ufo9");
+                break;
+              case 10: ufoDiv.classList.add("ufo10");
+                break;
+            }
+            ufoDiv.id = `${i}ufo1`;
+            noUfos++;
+            ufoGrp.appendChild(ufoDiv);
+            ufo1X[i] = parseInt(Math.random()*100, 10);
+            //console.log(ufo1X[i]);
+            ufo1Y[i] = parseInt(100+toXPercent((Math.random()*40)+10), 10);
+            //console.log(ufo1Y[i]);
+            ufo1XSpeedVari[i] = ufo1XMinSpeed+((Math.random()-Math.random())*(ufo1XMaxSpeed-ufo1XMinSpeed));
+            //console.log(ufo1XSpeedVari[i]);
+            ufoDiv.style.bottom = `${ufo1Y[i]}%`;
+            ufoDiv.style.left = `${ufo1X[i]}%`;
+            ufo1States.push(true);
+          }
+        }
+      }
+      function mkStars()
+      {
+        if(mainDiv == null)
+        {
+          mainDiv = document.createElement('div');
+          mainDiv.classList.add("stars");
+          document.body.appendChild(mainDiv);
+          for(var i = 0; i < noOfStars; i++)
+          {
+            //var className = "star s" + toString(i+1);
+            //document.body.appendChild(document.createTextNode(<div class={className}></div>));
+            Div = mainDiv.appendChild(document.createElement('div'));
+            Div.classList.add("star");
+            Div.style.left = `${Math.floor(Math.random() * width)}px`;
+            Div.style.top = `${Math.floor(Math.random() * height)}px`;
+            scale = `${Math.floor(Math.random() * (sMax-sMin))+sMin}px`;
+            Div.style.height = scale;
+            Div.style.width = scale;
+            Div.style.filter = `blur(${Math.floor(Math.random() * (scale/2))}px)`;
+          }
+        }else{
+          Div = document.getElementsByClassName("star")
+          for(var i = 0; i < Div.length; i++)
+          {
+            Div[i].style.left = `${Math.floor(Math.random() * width)}px`;
+            Div[i].style.top = `${Math.floor(Math.random() * height)}px`;
+            scale = `${Math.floor(Math.random() * (sMax-sMin))+sMin}px`;
+            Div[i].style.height = scale;
+            Div[i].style.width = scale;
+            Div[i].style.filter = `blur(${Math.floor(Math.random() * (scale/2))}px)`;
+          }
+        }
+      }
+      function ufoStatus()
+      {
+        for(var i = 0; i < totUfos; i++)
+        {
+          if(document.getElementById(`${i}ufo1`) != null)
+          {
+            console.log(`Status: ufo-${i} at (${ufo1X[i]},${ufo1Y[i]})`);
+          }
+        }
+        for(var i = 0; i < totBullets; i++)
+        {
+          if(document.getElementById(`${i}b`) != null)
+          {
+            console.log(`status: bullet-${i} at (${bulletX[i]},${bulletY[i]})`);
+          }
+        }
+      }
+      function mkBlast(x, y, pow)
+      {
+        console.log("Making blast")
+        for(var i = 0; i < noOfBlastes*pow; i++)
+        {
+          blastSet.push(document.createElement('div'));
+          blastSet[blastSet.length-1].classList.add("blast");
+          blasts.appendChild(blastSet[blastSet.length-1]);
+          blastScale.push(minBlastRad + ((maxBlastRad - minBlastRad) * Math.random()));
+          blastSet[blastSet.length-1].style.height = `${blastScale[blastSet.length-1]}px`;
+          blastSet[blastSet.length-1].style.width = `${blastScale[blastSet.length-1]}px`;
+          blastX.push(x + ((Math.random() - Math.random()) * toXPercent(ufo1Wd)));
+          blastY.push(y + ((Math.random() - Math.random()) * toYPercent(ufo1Ht)));
+          blastSet[blastSet.length-1].style.left = `${blastX[blastSet.length-1]}%`;
+          blastSet[blastSet.length-1].style.bottom = `${blastY[blastSet.length-1]}%`;
+          blastOpa.push(1);
+        }
+      }
+      function toXPercent(x)
+      {
+        return x/width*100;
+      }
+      function toYPercent(y)
+      {
+        return y/height*100;
+      }
+      function toXpx(x)
+      {
+        return x/100*width;
+      }
+      function toYpx(y)
+      {
+        return y/100*height;
+      }
+      // INPUT CONTROLS
+
+      //keybord
+
+      window.addEventListener('keydown', (event) => {
+        //console.log(event);
+        if(event.key == "ArrowLeft" || event.key == "a")
+        {
+          isLeft = true;
+        }
+        if(event.key == "ArrowRight" || event.key == "d")
+        {
+          isRight = true;
+        }
+        if(event.key == " " || event.key == "w" || event.key == "ArrowUp")
+        {
+          fire();
+        }
+        if(event.key == "Escape")
+        {
+          pause();
+        }
+        if(event.key == "s")
+        {
+          ufoStatus();
+        }
+        if(event.key == "q")
+        {
+          won();
+        }
+      });
+      window.addEventListener('keyup', (event) => {
+        //console.log(event);
+        if(event.key == "ArrowLeft" || event.key == "a")
+        {
+          isLeft = false;
+        }
+        if(event.key == "ArrowRight" || event.key == "d")
+        {
+          isRight = false;
+        }
+      });
+
+      //mouse
+
+      leftBt.addEventListener('mousedown', (event) => {
+        //console.log(event);
+        isLeft = true;
+      });
+      leftBt.addEventListener('mouseup', (event) => {
+        //console.log(event);
+        isLeft = false;
+      });
+      rightBt.addEventListener('mousedown', (event) => {
+        //console.log(event);
+        isRight = true;
+      });
+      rightBt.addEventListener('mouseup', (event) => {
+        //console.log(event);
+        isRight = false;
+      });
+
+      //touch screen
+
+      leftBt.addEventListener('touchstart', (event) => {
+        //console.log(event);
+        isLeft = true;
+      });
+      leftBt.addEventListener('touchend', (event) => {
+        //console.log(event);
+        isLeft = false;
+      });
+      rightBt.addEventListener('touchstart', (event) => {
+        //console.log(event);
+        isRight = true;
+      });
+      rightBt.addEventListener('touchend', (event) => {
+        //console.log(event);
+        isRight = false;
+      });
+
+      
+      mkStars();
+      refresh();
+    </script>
+</body>
+</html>
